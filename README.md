@@ -1,53 +1,68 @@
-| Supported Targets | ESP32 | ESP32-C2 | ESP32-C3 | ESP32-S2 | ESP32-S3 |
-| ----------------- | ----- | -------- | -------- | -------- | -------- |
+GPS Parser Library
 
-# Hello World Example
+(*)Introduction:
+The GPS Parser Library is a C/C++ library for parsing GPS data in NMEA format (specifically, the GGA sentence) on ESP-32 using ESP-IDF v5.0 stable. It provides a convenient way to extract individual GPS data parameters from a GGA packet and verify packet integrity.
 
-Starts a FreeRTOS task to print "Hello World".
-
-(See the README.md file in the upper level 'examples' directory for more information about examples.)
-
-## How to use example
-
-Follow detailed instructions provided specifically for this example. 
-
-Select the instructions depending on Espressif chip installed on your development board:
-
-- [ESP32 Getting Started Guide](https://docs.espressif.com/projects/esp-idf/en/stable/get-started/index.html)
-- [ESP32-S2 Getting Started Guide](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s2/get-started/index.html)
+(*)Features:
+->Parsing of GGA packets: The library can parse GGA packets and extract relevant information such as time, latitude, and longitude.
+->Packet integrity verification: It validates the GGA packet integrity using a checksum to ensure the data is not corrupted.
+->Handling of empty or incorrect strings: The library handles cases where the input string is empty or does not conform to the expected GGA format.
 
 
-## Example folder contents
+(*)Usage:
+1) Include the gps_parser.h header file in your ESP-IDF project:
 
-The project **hello_world** contains one source file in C language [hello_world_main.c](main/hello_world_main.c). The file is located in folder [main](main).
+-> #include "gps_parser.h"
 
-ESP-IDF projects are built using CMake. The project build configuration is contained in `CMakeLists.txt` files that provide set of directives and instructions describing the project's source files and targets (executable, library, or both). 
+2) Create an instance of the GPSData structure to store the parsed GPS data:
 
-Below is short explanation of remaining files in the project folder.
+-> GPSData gpsData;
 
-```
-├── CMakeLists.txt
-├── pytest_hello_world.py      Python script used for automated testing
-├── main
-│   ├── CMakeLists.txt
-│   └── hello_world_main.c
-└── README.md                  This is the file you are currently reading
-```
 
-For more information on structure and contents of ESP-IDF projects, please refer to Section [Build System](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/build-system.html) of the ESP-IDF Programming Guide.
+3) Call the "parse_gps_data function" with a GGA packet and the GPSData structure as arguments:
 
-## Troubleshooting
+-> const char* ggaPacket = "$GPGGA,123519.6,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,";
+  if (parse_gps_data(ggaPacket, &gpsData)) {
+    // Parsed data is available in the gpsData structure
+    printf("Time: %s\n", gpsData.time);
+    printf("Latitude: %f\n", gpsData.latitude);
+    printf("Longitude: %f\n", gpsData.longitude);
+} else {
+    // Invalid GGA packet
+    printf("Invalid GGA packet\n");
+}
 
-* Program upload failure
+4) The function returns true if the parsing is successful and false otherwise.
 
-    * Hardware connection is not correct: run `idf.py -p PORT monitor`, and reboot your board to see if there are any output logs.
-    * The baud rate for downloading is too high: lower your baud rate in the `menuconfig` menu, and try again.
+5) Build and run your ESP-IDF project, ensuring that you have the necessary ESP-IDF libraries linked.
 
-## Technical support and feedback
+(*)Example:
+An example program is provided in the repository that demonstrates the usage of the GPS Parser Library. It includes a unit test that tests various scenarios with valid and invalid GGA packets.
 
-Please use the following feedback channels:
+To run the example program:
 
-* For technical queries, go to the [esp32.com](https://esp32.com/) forum
-* For a feature request or bug report, create a [GitHub issue](https://github.com/espressif/esp-idf/issues)
+1) Clone the repository:
 
-We will get back to you as soon as possible.
+bash
+git clone <repository_url>
+
+2) Navigate to the example directory:
+
+bash
+cd example
+
+3)Build and flash the example program to your ESP-32 using the ESP-IDF build system.
+
+4)Check the console output to observe the parsed GPS data and any error messages.
+
+(*)License:
+This library is released under a freeware license. 
+
+(*)Contributing:
+Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
+
+(*)Credits:
+The GPS Parser Library is developed by Raza Ali and is based on the ESP-IDF framework by Espressif Systems as a test program for Cowlar inc.
+
+Contact
+For any inquiries or questions, please contact smabidi32@gmail.com
